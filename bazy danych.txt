@@ -1,0 +1,120 @@
+CREATE DATABASE firma
+    WITH 
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'Polish_Poland.1250'
+    LC_CTYPE = 'Polish_Poland.1250'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1;
+
+CREATE TABLE public.pracownicy
+(
+    id_pracownika integer NOT NULL,
+    imie character varying(50) COLLATE pg_catalog."default",
+    nazwisko character varying(50) COLLATE pg_catalog."default",
+    adres character varying(100) COLLATE pg_catalog."default",
+    telefon character varying(20) COLLATE pg_catalog."default",
+    CONSTRAINT pracownicy_pkey PRIMARY KEY (id_pracownika)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public.pracownicy
+    OWNER to postgres;
+CREATE TABLE public.godziny
+(
+    id_godziny integer NOT NULL,
+    data date,
+    liczba_godzin integer,
+    id_pracownika integer,
+    CONSTRAINT godziny_pkey PRIMARY KEY (id_godziny),
+    CONSTRAINT id_pracownika FOREIGN KEY (id_pracownika)
+        REFERENCES public.pracownicy (id_pracownika) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public.godziny
+    OWNER to postgres;
+
+CREATE TABLE public.premie
+(
+    id_premii integer NOT NULL,
+    rodzaj character varying(50) COLLATE pg_catalog."default",
+    kwota integer,
+    CONSTRAINT premie_pkey PRIMARY KEY (id_premii)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public.premie
+    OWNER to postgres;
+
+CREATE TABLE public.pensje
+(
+    id_pensji integer NOT NULL,
+    stanowisko character varying(50) COLLATE pg_catalog."default",
+    kwota integer,
+    id_premii integer,
+    CONSTRAINT pensje_pkey PRIMARY KEY (id_pensji),
+    CONSTRAINT id_premii FOREIGN KEY (id_premii)
+        REFERENCES public.premie (id_premii) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public.pensje
+    OWNER to postgres;
+
+INSERT INTO pracownicy(id_pracownika, imie, nazwisko, adres, telefon)
+VALUES (1, 'Karol', 'Duda', 'Piaskowa 10', 48685741987 ),
+(2, 'Karolina', 'Duda', 'Piaskowa 10', 48688741987 ),
+(3, 'Maciej', 'Duda', 'Piaskowa 9', 48789456235 ),
+(4, 'Arnold', 'Mlot', 'Mogilska 2', 48789548621 ),
+(5, 'Adam', 'Grek', 'Mogilska 4', 48741582621 ),
+(6, 'Michal', 'Grek', 'Mogilska 24', 48456582621 ),
+(7, 'Daniel', 'Taterka', 'Fiolkowa 42', 48456879132 ),
+(8, 'Daniel', 'Sad', 'Milosza 42', 48985369741 ),
+(9, 'August', 'Norman', 'Milosza 21', 48582647951),
+(10, 'Tomasz', 'Adamiak', 'Piłsudskiego 56', 48354698741)
+
+INSERT INTO godziny(id_godziny, data, liczba_godzin , id_pracownika)
+VALUES (1, '2020-03-26', 12, 1),
+(2, '2020-03-26', 10, 2),
+(3, '2020-03-25', 6, 3),
+(4, '2020-03-24', 8, 4),
+(5, '2020-03-25', 4, 5),
+(6, '2020-03-21', 12, 6),
+(7, '2020-03-20', 8, 7),
+(8, '2020-04-01', 8, 8),
+(9, '2020-04-02', 10, 9),
+(10, '2020-04-03', 6, 10)
+
+INSERT INTO premie(id_premii, rodzaj, kwota)
+VALUES (1, 'nadgodziny', 1000),
+(2, 'nadgodziny', 500),
+(3, 'nadgodziny', 250),
+(4, 'bonus', 1000),
+(5, 'bonus', 500),
+(6, 'bonus', 250),
+(7, 'motywacyjna', 1000),
+(8, 'motywacyjna', 2000),
+(9, 'motywacyjna', 1500),
+(10, 'uznaniowa', 500)
+
+INSERT INTO pensje(id_pensji, stanowisko, kwota, id_premii)
+VALUES (1, 'dyrektor', 10000, 4),
+(2, 'vice dyrektor', 5000, 2),
+(3, 'księgowa', 5200, 1),
+(4, 'sekretarka', 2500, 3),
+(5, 'kierownik', 5000, 8),
+(6, 'zastępca kierownika', 4000, 9),
+(7, 'inżynier', 3500, 7),
+(8, 'młodszy inżynier', 3000, 5),
+(9, 'kierowca', 2900, 6),
+(10, 'pracownik', 2500, 10)
+
