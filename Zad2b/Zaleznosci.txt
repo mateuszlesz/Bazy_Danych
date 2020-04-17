@@ -1,0 +1,18 @@
+ Tabela Zamowienia
+
+id_produktu -> nazwa_produktu,cena_produktu,VAT
+cena_produktu,ilość -> summa_netto
+summa_netto,VAT -> summa_brutto
+id_klienta -> nazwa_klienta,data zamowienia,ilosc
+
+Klucze Kandydujące:
+id_produktu,id_klienta
+
+Tabela pomieszczenia
+
+id_pomieszczenia ->numer_pomieszczenia,powierzchnia,liczba_okien,liczba_drzwi,id_budynku
+id_budynku -> ulica,miasto,kod_pocztowy
+kod_pocztowy -> miasto
+
+Klucze Kandydujące:
+id_pomieszczenia
