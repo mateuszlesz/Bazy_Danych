@@ -1,0 +1,131 @@
+Create table lekarz(
+	IDPracownika int NOT NUll,
+	ImieLekarza varchar(30),
+	NazwiskoLekarza varchar(30),
+	Primary Key (IDPracownika)
+);
+	Create table Pacjent(
+	IDPacjenta int NOT NUll,
+	ImiePacjenta varchar(30),
+	NazwiskoPacjenta varchar(30),
+	Primary Key (IDPacjenta)
+);
+
+Create table Zabieg(
+	IDZabiegu int NOT NUll,
+	NazwaZabiegu varchar(50),
+	Primary Key (IDZabiegu)
+);
+
+Create table Wizyta(
+	IDWizyty int NOT NUll,
+	DataWizyty date,
+	GodzinaWizyty time,
+	IdZabiegu int NOT NUll,
+	IdPacjenta int NOT NUll,
+	IdPracownika int NOT NUll,
+	Primary Key (IDWizyty),
+	FOREIGN KEY (IdZabiegu) REFERENCES Zabieg(idzabiegu),
+	FOREIGN KEY (IdPacjenta) REFERENCES Pacjent(idpacjenta),
+	FOREIGN KEY (IdPracownika) REFERENCES lekarz(idpracownika)
+);
+
+Create table lekarz(
+	IDPracownika int NOT NUll,
+	ImieLekarza varchar(30),
+	NazwiskoLekarza varchar(30),
+	Primary Key (IDPracownika)
+
+
+Create table Produkt(
+	IDProduktu int NOT NUll,
+	NazwiskoProduktu varchar(50),
+	Primary Key (IDProduktu)
+);
+Create table Cena(
+	CenaBrutto int ,
+	CenaNetto int,
+	Primary Key (CenaBrutto)
+);
+	Create table Miasto(
+	Kodpocztowy varchar(15) NOT NUll,
+	Miasto varchar(40),
+	Primary Key (kodpocztowy)
+);
+Create table Dostawca(
+	IDDostawcy int NOT NUll,
+	Dostawca varchar(50),
+	Ulica varchar(50),
+	nrmieszkania varchar(10),
+	kodpocztowy varchar(15),
+	Primary Key (IDDostawcy),
+	Foreign key (kodpocztowy) references miasto(kodpocztowy)
+)
+	Create table Dostawa(
+	IDDostawy int NOT NUll,
+	Produkt int,
+	Dostawca int,
+	Cena int,
+	Primary Key (IDDostawy),
+	Foreign key (produkt) references Produkt(IDProduktu),
+	Foreign key (Dostawca) references Dostawca(IDDostawcy),
+	Foreign key (cena) references Cena(CenaBrutto)
+
+Insert into lekarz(idpracownika,imielekarza,nazwiskolekarza)
+Values (1011,'Maria' ,'Nowak' ),
+(1024,'Jan' ,'Kowalski'),
+(1034,'Marek' ,'Potocki'),
+(1045,'Anna' ,'Jabłońska')
+
+Insert into Pacjent(idpacjenta,imiepacjenta,nazwiskopacjenta)
+Values (100,'Anna','Jeleń'),
+(105,'Jarosław', 'Nicpoń'),
+(108,'Joanna','Nosek'),
+(120,'Jan', 'Kałuża'),
+(123,'Olga','Nowacka'),
+(130,'Jerzy','Lis')
+
+Insert into Wizyta(idwizyty,datawizyty,godzinawizyty,idzabiegu,idpacjenta,idpracownika)
+Values (100,'12.03.2020', '10:00',500,100,1011),
+(101,	'12.03.2020' ,'13:00',	496,105,1011),
+(102,	'14.03.2020' ,'10:00',	500,108,1011),
+(103,	'16.03.2020' ,'17:00',	503,108,1024),
+(104,	'18.03.2020' ,'09:00',	500,120,1045),
+(105,	'20.03.2020' ,'08:00',	496,130,1034),
+(106,	'12.03.2020' ,'15:00',	503,123,1034)
+);
+
+Insert Into produkt(idproduktu,nazwaproduktu)
+Values  (100,	'Makaron Nitki'),
+(101,	'Keczup pikantny'),
+(102,	'Sos pomidorowy')
+
+Insert Into cena(cenabrutto,cenanetto)
+Values  (130, 150), 
+(200, 220),
+(89,  110)
+
+Insert Into miasto(kodpocztowy,miasto)
+Values ('31-435' , 'Kraków'),
+('31-342','Kraków'),
+('04-242','Lublin'),
+('30-243','Tarnów'),
+('35-434','Nowy Targ')
+
+
+
+Insert Into dostawca(iddostawcy,dostawca,ulica,nrmieszkania,kodpocztowy)
+Values ( 300,	'Makarony Polskie', 	'Turystyczna',	'40',	'31-435'),
+(301,	'Polskie przetwory',	'Wojska Polskiego',	'44a',	'31-342'),
+(302,	'Lubelski Makaron',	'Piłsudskiego',	'332a',	'04-242'),
+(303,	'Przetwory pomidorowe'	,'Rolnicza',	'22/4',	'30-243'),
+(304	,	'Małopolskie smaki',	'Mickiewicza',	'223/77',	'35-434')
+
+Insert Into dostawa(Iddostawy,produkt,dostawca,cena)
+Values (01,	100,300,150),
+(02, 100,302,150),
+(03, 101,301,220),
+(04, 101,303,220),
+(05, 102,301,110),
+(06, 102,304,110)
+	
