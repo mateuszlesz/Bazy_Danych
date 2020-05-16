@@ -1,0 +1,155 @@
+CREATE SCHEMA ksiegowosc;
+
+CREATE TABLE ksiegowosc.pracownicy(
+id_pracownika varchar(5) unique NOT NULL PRIMARY KEY,
+Imie varchar(20),
+Nazwisko varchar(20),
+Adres varchar(50),
+Telefon varchar(12)
+);
+
+CREATE TABLE ksiegowosc.godziny(
+id_godziny varchar(5) unique NOT NULL PRIMARY KEY,
+Data DATE,
+Liczba_godzin int,
+id_pracownika varchar(5) not null references ksiegowosc.pracownicy(id_pracownika)	
+);
+
+CREATE TABLE ksiegowosc.pensja(
+id_pensji varchar(5) unique NOT NULL PRIMARY KEY,
+stanowisko varchar(25),
+kwota int
+);
+
+CREATE TABLE ksiegowosc.premia(
+id_premii varchar(5) unique NOT NULL PRIMARY KEY,
+rodzaj varchar(15),
+kwota int
+);
+
+COMMENT ON TABLE ksiegowosc.pracownicy IS 'Tabela z danymi pracowników';
+COMMENT ON TABLE ksiegowosc.godziny IS 'Tabela z danymi godzin przepracowanych przez pracownika ';
+COMMENT ON TABLE ksiegowosc.pensja IS 'Tabela z pensjami pracowników';
+COMMENT ON TABLE ksiegowosc.premia IS 'Tabela z premiami pracowników';
+
+INSERT INTO ksiegowosc.pracownicy(id_pracownika, imie, nazwisko, adres,telefon)
+VALUES ('P01', 'Karol', 'Duda', 'Piaskowa 10', '48685741987' ),
+('P02', 'Karolina', 'Duda', 'Piaskowa 10', '48688741987' ),
+('P03', 'Maciej', 'Duda', 'Piaskowa 9', '48789456235' ),
+('P04', 'Arnold', 'Mlot', 'Mogilska 2', '48789548621' ),
+('P05', 'Adam', 'Grek', 'Mogilska 4', '48741582621'),
+('P06', 'Michal', 'Grek', 'Mogilska 24', '48456582621' ),
+('P07', 'Daniel', 'Taterka', 'Fiolkowa 42', '48456879132' ),
+('P08', 'Daniel', 'Sad', 'Milosza 42', '48985369741' ),
+('P09', 'August', 'Norman', 'Milosza 21', '48582647951'),
+('P10', 'Tomasz', 'Adamiak', 'Piłsudskiego 56', '48354698741');
+
+INSERT INTO ksiegowosc.godziny(id_godziny, data, liczba_godzin , id_pracownika)
+VALUES ('G01', '2020-03-26', 120, 'P01'),
+('G02', '2020-03-26', 100, 'P02'),
+('G03', '2020-03-25', 60, 'P03'),
+('G04', '2020-03-24', 80, 'P04'),
+('G05', '2020-03-25', 40, 'P05'),
+('G06', '2020-03-21', 120, 'P06'),
+('G07', '2020-03-20', 80, 'P07'),
+('G08', '2020-04-01', 80, 'P08'),
+('G09', '2020-04-02', 100, 'P09'),
+('G10', '2020-04-03', 60, 'P10');
+
+INSERT INTO ksiegowosc.pensja(id_pensji, stanowisko, kwota)
+VALUES ('PA01', 'dyrektor', 10000),
+('PA02', 'vice dyrektor', 5000),
+('PA03', 'księgowa', 5200),
+('PA04', 'sekretarka', 2500),
+('PA05', 'kierownik', 5000),
+('PA06', 'zastępca kierownika', 4000),
+('PA07', 'inżynier', 3500),
+('PA08', 'młodszy inżynier', 3000),
+('PA09', 'kierowca', 2900),
+('PA10', 'pracownik', 2500)
+
+INSERT INTO ksiegowosc.premia(id_premii, rodzaj, kwota)
+VALUES ('PM01', 'nadgodziny', 1000),
+('PM02', 'nadgodziny', 500),
+('PM03', 'nadgodziny', 250),
+('PM04', 'kwartalna', 1000),
+('PM05', 'kwartalna', 500),
+('PM06', 'bonus', 250),
+('PM07', 'motywacyjna', 1000),
+('PM08', 'motywacyjna', 2000),
+('PM09', 'motywacyjna', 1500),
+('PM10', 'uznaniowa', 500)
+
+CREATE TABLE ksiegowosc.wynagrodzenie(
+id_wynagrodzenia varchar(5) unique NOT NULL PRIMARY KEY,
+Data date,
+id_pracownika varchar(5) references ksiegowosc.pracownicy(id_pracownika),
+id_godziny varchar(5) references ksiegowosc.godziny(id_godziny),
+id_pensji varchar(5) references ksiegowosc.pensja(id_pensji),
+id_premii varchar(5) references ksiegowosc.premia(id_premii)
+);
+
+COMMENT ON TABLE ksiegowosc.wynagrodzenie IS 'Tabela z danymi wynagrodzeń pracowników';
+
+INSERT INTO ksiegowosc.wynagrodzenie(id_wynagrodzenia,data,id_pracownika,id_godziny,id_pensji,id_premii)
+VALUES('W01','2020-04-05','P01','G01','PA01','PM03'),
+('W02','2020-04-06','P02','G02','PA02','PM03'),
+('W03','2020-04-05','P03','G03','PA03','PM01'),
+('W04','2020-04-08','P04','G04','PA03','PM07'),
+('W05','2020-04-10','P05','G05','PA07','PM08'),
+('W06','2020-04-12','P06','G06','PA07','PM10'),
+('W07','2020-04-14','P07','G07','PA08','PM05'),
+('W08','2020-04-15','P08','G08','PA06','PM06'),
+('W09','2020-04-01','P09','G09','PA10','PM01'),
+('W10','2020-04-03','P10','G10','PA03','PM01');
+
+Select id_pracownika,nazwisko From ksiegowosc.pracownicy
+Select W.id_pracownika,PA.kwota, PM.kwota From ksiegowosc.wynagrodzenie W,ksiegowosc.premia PM,ksiegowosc.pensja PA
+Where W.id_pensji=PA.id_pensji AND W.id_premii=PM.id_premii AND PA.kwota+PM.kwota>1000;
+
+Select W.id_pracownika From ksiegowosc.wynagrodzenie W, ksiegowosc.pensja PA
+Where W.id_pensji=PA.id_pensji AND w.id_premii is null AND PA.kwota>2000
+
+Select * From ksiegowosc.pracownicy Where imie like 'J%'
+
+Select * From ksiegowosc.pracownicy Where imie like '%a' AND nazwisko like '%n%'
+
+Select PR.Imie, PR.Nazwisko From ksiegowosc.pracownicy PR, ksiegowosc.godziny GD
+	Where PR.id_pracownika =GD.id_pracownika AND GD.liczba_godzin > 160;
+	
+Select PR.Imie, PR.Nazwisko From ksiegowosc.pracownicy PR,ksiegowosc.wynagrodzenie W,ksiegowosc.pensja PA
+Where PR.id_pracownika= W.id_pracownika AND PA.id_pensji=W.id_pensji AND PA.kwota between 1500 AND 3000
+	
+	
+Select PR.Imie, PR.Nazwisko FROM ksiegowosc.pracownicy PR, ksiegowosc.godziny GD,ksiegowosc.wynagrodzenie W
+	Where PR.id_pracownika =W.id_pracownika AND GD.id_godziny =W.id_godziny AND GD.liczba_godzin > 160 AND W.id_premii is null;
+Select W.id_pracownika FROM ksiegowosc.wynagrodzenie W,ksiegowosc.pensja PA 
+Where W.id_pensji=PA.id_pensji Order by PA.kwota
+
+Select W.id_pracownika, PA.kwota, PM.kwota FROM ksiegowosc.pensja PA
+	Left join ksiegowosc.wynagrodzenie W on PA.id_pensji = W.id_pensji 
+	Left join ksiegowosc.premia PM on W.id_premii = PM.id_premii
+order by  PA.kwota desc, PM.kwota desc;
+
+Select count(*) stanowisko from ksiegowosc.pensja
+group by stanowisko
+
+Select min(kwota),max(kwota),avg(kwota) from ksiegowosc.pensja 
+Where stanowisko='kierownik'
+
+Select Sum(PA.kwota)+Sum(PM.kwota) as wynagrodzenie FROM ksiegowosc.wynagrodzenie W
+	Left join ksiegowosc.pensja PA on W.id_pensji = PA.id_pensji 
+	Left join ksiegowosc.premia PM on W.id_premii = PM.id_premii
+	
+	Select PA.Stanowisko,Sum(PA.kwota)+Sum(PM.kwota) as wynagrodzenie FROM ksiegowosc.wynagrodzenie W
+	Left join ksiegowosc.pensja PA on W.id_pensji = PA.id_pensji 
+	Left join ksiegowosc.premia PM on W.id_premii = PM.id_premii group by PA.stanowisko
+
+Select count(W.id_premii) From ksiegowosc.wynagrodzenie W
+	Left join ksiegowosc.pensja PA on W.id_pensji=PA.id_pensji group by PA.stanowisko
+
+
+Delete
+From ksiegowosc.wynagrodzenie W
+Using ksiegowosc.pensja PA
+Where PA.kwota <1200 AND W.id_pensji=PA.id_pensji
