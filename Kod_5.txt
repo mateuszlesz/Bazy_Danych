@@ -2,8 +2,9 @@ UPDATE ksiegowosc.pracownicy
 SET telefon= CONCAT('(+48)',telefon)
 UPDATE ksiegowosc.pracownicy
 SET telefon= CONCAT(SUBSTRING(telefon,1,8),'-',substring(telefon,9,3),'-',substring(telefon,12,3))
-Select * from ksiegowosc.pracownicy order by length(nazwisko) desc limit 1
 
+Select * from ksiegowosc.pracownicy order by length(nazwisko) desc limit 1
+Select UPPER(id_pracownika),UPPER(Imie),UPPER(NAZWISKO),UPPER(adres),UPPER(telefon) from ksiegowosc.pracownicy order by length(nazwisko) desc limit 1
 
 Select PR.imie,PR.nazwisko,PR.adres,PR.telefon,PA.Kwota as Pensja,PM.kwota as Premia from ksiegowosc.pracownicy PR
 Left join ksiegowosc.wynagrodzenie W on PR.id_pracownika=W.id_pracownika
@@ -16,3 +17,6 @@ Where PR.id_pracownika = W.id_pracownika AND W.id_pensji=PA.id_pensji -- zamieni
 Select 'Pracownik',PR.imie,PR.nazwisko,'w dniu',W.data,'Otrzymał pensje całkowitą na kwotę',Sum(PA.kwota)+Sum(PM.kwota) as wynagrodzenie,'gdzie wynagrodzenie zasadnicze wynosiło:', PA.Kwota,'premia:',PM.kwota from ksiegowosc.pracownicy PR,ksiegowosc.wynagrodzenie W,ksiegowosc.pensja PA,ksiegowosc.premia PM
 Where PR.id_pracownika = W.id_pracownika AND W.id_pensji=PA.id_pensji AND W.id_premii=PM.id_premii
 Group by PR.imie,PR.nazwisko,W.data,PA.kwota,PM.kwota
+
+Select 'Pracownik '||PR.imie||' '||PR.nazwisko||' w dniu '||W.data||' Otrzymał pensje całkowitą na kwotę '||PA.kwota+PM.kwota||' gdzie wynagrodzenie zasadnicze wynosiło: '|| PA.Kwota||' premia: '||PM.kwota from ksiegowosc.pracownicy PR,ksiegowosc.wynagrodzenie W,ksiegowosc.pensja PA,ksiegowosc.premia PM
+Where PR.id_pracownika = W.id_pracownika AND W.id_pensji=PA.id_pensji AND W.id_premii=PM.id_premii
