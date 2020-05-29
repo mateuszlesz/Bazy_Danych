@@ -1,0 +1,15 @@
+pg_dump -U Superuser -d Zadanie5 > C:\Users\mateu\Desktop\last_zad5.sql
+
+psql -U Superuser -d Zadanie5 -1 -f C:\Users\mateu\Desktop\last_zad5.sql
+
+RESTORE DATABASE [AdventureWorks2017] FROM  DISK = N'D:\Adventure\AdventureWorks2017.bak' WITH  FILE = 1,  MOVE N'AdventureWorks2017' TO N'D:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\AdventureWorks2017.mdf',  MOVE N'AdventureWorks2017_log' TO N'D:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\AdventureWorks2017_log.ldf',  NOUNLOAD,  STATS = 5
+
+BACKUP DATABASE [AdventureWorks2017] TO  DISK = N'D:\Adventure\AdventureWorks2017.bak' WITH NOFORMAT, NOINIT,  NAME = N'AdventureWorks2017-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10
+
+
+Create View LoginDep
+as
+Select HD.Name,HE.LoginID from HumanResources.Department HD,HumanResources.Employee HE
+left outer join HumanResources.EmployeeDepartmentHistory HED
+on HE.BusinessEntityID = HED.BusinessEntityID
+Where HD.DepartmentID=HED.DepartmentID
