@@ -1,0 +1,53 @@
+Begin
+Select AVG(Rate) as AverageRate from HumanResources.EmployeePayHistory
+
+Select * from Person.Person PP
+Left outer join HumanResources.EmployeePayHistory HPH
+ON PP.BusinessEntityID=HPH.BusinessEntityID
+Where HPH.Rate > (Select AVG(Rate) from HumanResources.EmployeePayHistory)
+END;
+
+Create or Alter Function Shipdate (
+@orderid int
+)
+Returns Table
+AS
+RETURN
+	Select ShipDate from Purchasing.PurchaseOrderHeader
+	Where PurchaseOrderID= @orderid;
+
+select * from [dbo].[Shipdate](22)
+
+Create or Alter Procedure Produkt @nazwaproduktu nvarchar(50)
+AS
+Select PP.ProductID,PP.ProductNumber,Sum(PL.Availability) as Availability from Production.Product PP,Production.Location PL
+left outer join Production.ProductInventory PPI
+on PPI.LocationID=PL.LocationID
+Where PP.ProductID=PPI.ProductID AND PP.Name=@nazwaproduktu
+Group by PP.ProductID,PP.ProductNumber
+
+Exec Produkt @nazwaproduktu= 'Blade'
+
+Create or Alter Function KartaK (
+@numerzamowienia int
+)
+Returns Table
+AS
+RETURN
+	Select CardNumber from Sales.CreditCard CC
+	Left outer join Sales.SalesOrderHeader SOH
+	on SOH.CreditCardID=CC.CreditCardID
+	Where SalesOrderID=@numerzamowienia
+
+select * from [dbo].[KartaK](43659)
+
+Create or Alter Procedure division @num1 float,@num2 float
+AS
+Begin
+If @num1 < @num2 or @num2=0
+	print 'Niewłaściwie zdefiniowałeś dane wejściowe'
+Else
+	Select @num1/@num2 as 'Wynik Dzielenia'
+End;
+
+Exec division @num1=10, @num2=5
