@@ -1,0 +1,54 @@
+CREATE PROCEDURE Fibonacci
+(
+@n INT
+)
+
+AS 
+DECLARE @fn INT=0;
+DECLARE @f1 INT=0;
+DECLARE @f2 INT=1;
+
+IF @n = 1
+BEGIN
+ SET @fn=0 ;
+END;
+ELSE 
+BEGIN
+	WHILE @n-1 > 1
+	BEGIN
+	 SET @n = @n-1;
+	 SET @fn = @f1 + @f2;
+	 SET @f1 = @f2;
+	 SET @f2 = @fn;
+	 
+	END;
+END;
+SELECT @fn as Ciag_Fibonacciego;
+RETURN;
+
+Exec Fibonacci @n = 10
+
+CREATE  TRIGGER LastnameUp on Person.Person
+FOR UPDATE AS
+UPDATE Person SET LastName=upper(LastName)
+
+UPDATE Person.Person Set FirstName='Lee' Where BusinessEntityID=1
+
+CREATE TRIGGER taxRateMonitoring ON Sales.SalesTaxRate
+AFTER UPDATE AS
+BEGIN
+SET NOCOUNT ON;
+ DECLARE @newtax FLOAT;
+ DECLARE @oldtax FLOAT;
+ SELECT @newtax= TaxRate FROM inserted
+ SELECT @oldtax = TaxRate FROM deleted
+ 
+ IF ((@newtax > @oldtax+ 0.3* @oldtax) OR (@newtax < @oldtax - 0.3* @oldtax))
+  BEGIN
+     print 'Wystapil blad przy zmianie pola taxrate. Zmiana nastąpila powyzej 30 % poprzedniej wartosci'
+     ROLLBACK
+     RETURN
+  END;
+ END;
+
+ UPDATE Sales.SalesTaxRate SET TaxRate='14' WHERE SalesTaxRateID=1
